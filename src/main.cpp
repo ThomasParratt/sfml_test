@@ -1,7 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
-void    draw_squares(sf::RenderWindow& window, sf::RectangleShape bg, int move)
+void    drawBackground(sf::RenderWindow& window, sf::RectangleShape bg, int move)
 {
     for (int i = 0; i < 1000; i += 1)
     {
@@ -25,7 +25,7 @@ int main()
     sf::RectangleShape  bg(sf::Vector2f(10, 10));
     square.setFillColor(sf::Color::Red);
     square_2.setFillColor(sf::Color::Green);
-    bg.setFillColor(sf::Color::Blue);
+    bg.setFillColor(sf::Color(100, 100, 100, 100));
 
     int x = 100;
     int y = 450;
@@ -53,8 +53,8 @@ int main()
         window.clear();
 
         static int move;
-        move -= 10;
-        draw_squares(window, bg, move);
+        move -= 1;
+        drawBackground(window, bg, move);
         window.draw(square);
         square_2.setPosition(350 + move, 450);
         window.draw(square_2);
