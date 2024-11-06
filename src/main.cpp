@@ -1,6 +1,10 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
+// smoother movement
+// collisions
+// more obstacles
+
 void    drawBackground(sf::RenderWindow& window, sf::RectangleShape bg, sf::RectangleShape square_2, float move)
 {
     for (int i = 0; i < window.getSize().x; i += 1)
