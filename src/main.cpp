@@ -5,7 +5,7 @@
 // collisions
 // more obstacles
 
-void    drawBackground(sf::RenderWindow& window, sf::RectangleShape bg, sf::RectangleShape square_2, float move)
+void    drawBackground(sf::RenderWindow& window, sf::RectangleShape bg, sf::RectangleShape square_2, sf::RectangleShape square, float move)
 {
     for (int i = 0; i < window.getSize().x; i += 1)
     {
@@ -35,7 +35,7 @@ int main()
     sf::RectangleShape  square(sf::Vector2f(squareSize, squareSize));
     sf::RectangleShape  square_2(sf::Vector2f(squareSize, squareSize));
     sf::RectangleShape  bg(sf::Vector2f(bgSqSize, bgSqSize));
-    square.setFillColor(sf::Color::Red);
+    square.setFillColor(sf::Color::Blue);
     square_2.setFillColor(sf::Color::Green);
     bg.setFillColor(sf::Color(100, 100, 100, 100));
 
@@ -61,28 +61,158 @@ int main()
 
         sf::Vector2f    playerPos = square.getPosition();
         sf::Vector2f    obstaclePos = square_2.getPosition();
-        std::cout << "obstaclePos.y = " << obstaclePos.y << std::endl;
-        std::cout << "windowHeight - squareSize = " << windowHeight - squareSize << std::endl;
+        // std::cout << "obstaclePos.y - squareSize = " << obstaclePos.y - squareSize << std::endl;
+        // std::cout << "obstaclePos.x = " << obstaclePos.x << std::endl;
+        // std::cout << "windowHeight - squareSize = " << windowHeight - squareSize << std::endl;
+
+        // std::cout << "playerPosPos.x = " << playerPos.x << std::endl;
+        // std::cout << "playerPosPos.y = " << playerPos.y << std::endl << std::endl;
+        // std::cout << "obstaclePos.x = " << obstaclePos.x << std::endl;
+        //std::cout << "obstaclePos.y = " << obstaclePos.y << std::endl << std::endl;
+
+        //float   floorLevel = 
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && playerPos.y >= 0.0f)
             square.move(0.0f, -moveSpeed * deltaTime);
-        else if (playerPos.y <= (windowHeight - squareSize) || playerPos.y <= (obstaclePos.y - squareSize))
+        else if (playerPos.y < (windowHeight - squareSize) && ((obstaclePos.x >= playerPos.x + squareSize) || (obstaclePos.x <= playerPos.x)))
         {
-            // need to do something here
             square.move(0.0f, moveSpeed * deltaTime);
         }
-        move -= moveSpeed * deltaTime;
+        else if (playerPos.y < (windowHeight - squareSize * 2)) // above the obstacle
+        {
+            square.move(0.0f, moveSpeed * deltaTime);
+        }
+        
+        if ((obstaclePos.x >= playerPos.x + squareSize) || (playerPos.y != (windowHeight - squareSize)))
+            move -= moveSpeed * deltaTime;
         square_2.setPosition(700.0f + move, windowHeight - squareSize);
 
         window.clear();
 
-        drawBackground(window, bg, square_2, move);
+        drawBackground(window, bg, square_2, square, move);
         window.draw(square);
     
         window.display();
     }
     return 0;
 }
+
+
+// Helper function for drawing background
+// void drawBackground(sf::RenderWindow& window, sf::RectangleShape bg, float move, unsigned int bgSqSize) {
+//     unsigned int windowWidth = window.getSize().x;
+//     unsigned int windowHeight = window.getSize().y;
+
+//     for (int i = 0; i < windowWidth / bgSqSize + 1; ++i) {
+//         for (int j = 0; j < windowHeight / bgSqSize + 1; ++j) {
+//             if ((i + j) % 2 == 0) {  // alternate tiles
+//                 bg.setPosition((i * bgSqSize) + move, j * bgSqSize);
+//                 window.draw(bg);
+//             }
+//         }
+//     }
+// }
+
+// int main() {
+//     sf::RenderWindow window(sf::VideoMode(2000, 1000), "CMake SFML Project");
+
+//     sf::Vector2u windowSize = window.getSize();
+//     unsigned int windowWidth = windowSize.x;
+//     unsigned int windowHeight = windowSize.y;
+//     float squareSize = windowWidth / 20.0f;
+//     float bgSqSize = windowWidth / 100.0f;
+
+//     sf::RectangleShape square(sf::Vector2f(squareSize, squareSize));
+//     sf::RectangleShape square_2(sf::Vector2f(squareSize, squareSize));
+//     sf::RectangleShape bg(sf::Vector2f(bgSqSize, bgSqSize));
+//     square.setFillColor(sf::Color::Blue);
+//     square_2.setFillColor(sf::Color::Green);
+//     bg.setFillColor(sf::Color(100, 100, 100, 100));
+
+//     square.setPosition(200.0f, windowHeight - squareSize);
+//     square_2.setPosition(700.0f, windowHeight - squareSize);
+
+//     float moveSpeed = 50.0f;
+//     float obstacleMoveSpeed = 100.0f;
+//     float move = 0.0f;
+
+//     sf::Clock clock;
+
+//     while (window.isOpen()) {
+//         sf::Event event;
+//         while (window.pollEvent(event)) {
+//             if (event.type == sf::Event::Closed)
+//                 window.close();
+//         }
+
+//         // Calculate time elapsed per frame
+//         float deltaTime = clock.restart().asSeconds();
+
+//         // Update player position based on user input and simple gravity
+//         sf::Vector2f playerPos = square.getPosition();
+//         sf::Vector2f obstaclePos = square_2.getPosition();
+
+//         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && playerPos.y >= 0.0f) {
+//             square.move(0.0f, -moveSpeed * deltaTime);
+//         } else if (playerPos.y < windowHeight - squareSize && 
+//                    ((obstaclePos.x >= playerPos.x + squareSize) || (obstaclePos.x <= playerPos.x))) {
+//             // Apply gravity when not at floor level or on obstacle
+//             square.move(0.0f, moveSpeed * deltaTime);
+//         }
+
+//         // Move the background and obstacle
+//         move -= moveSpeed * deltaTime;
+//         square_2.setPosition(700.0f + move, windowHeight - squareSize);
+
+//         // Reset the obstacle position if it goes off-screen
+//         if (square_2.getPosition().x < -squareSize) {
+//             move = windowWidth;  // Reset the move to reappear on the right side
+//         }
+
+//         // Rendering
+//         window.clear();
+//         drawBackground(window, bg, move, bgSqSize);
+//         window.draw(square_2);
+//         window.draw(square);
+//         window.display();
+//     }
+//     return 0;
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /*void    draw_squares(sf::RenderWindow& window, sf::RectangleShape square, sf::CircleShape player, sf::CircleShape pizza, sf::CircleShape tomato)
 {
@@ -101,6 +231,8 @@ int main()
     window.draw(tomato);
     window.draw(player);
 }
+
+// cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug -S /home/tparratt/Desktop/sfml -B /home/tparratt/Desktop/sfml/build
 
 int main()
 {
