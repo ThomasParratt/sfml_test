@@ -52,7 +52,6 @@ int main()
         sf::Event event;
         while (window.pollEvent(event))
         {
-
             if (event.type == sf::Event::Closed)
                 window.close();
         }
@@ -60,21 +59,17 @@ int main()
         // time elapsed each frame
         float deltaTime = clock.restart().asSeconds();
 
-        sf::Vector2f position = square.getPosition();
+        sf::Vector2f    playerPos = square.getPosition();
+        sf::Vector2f    obstaclePos = square_2.getPosition();
+        std::cout << "obstaclePos.y = " << obstaclePos.y << std::endl;
+        std::cout << "windowHeight - squareSize = " << windowHeight - squareSize << std::endl;
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && playerPos.y >= 0.0f)
+            square.move(0.0f, -moveSpeed * deltaTime);
+        else if (playerPos.y <= (windowHeight - squareSize) || playerPos.y <= (obstaclePos.y - squareSize))
         {
-            if (position.y >= 0.0f)
-            {
-                square.move(0.0f, -moveSpeed * deltaTime);
-            }
-        }
-        else
-        {
-            if (position.y <= (windowHeight - squareSize))
-            {
-                square.move(0.0f, moveSpeed * deltaTime);
-            }
+            // need to do something here
+            square.move(0.0f, moveSpeed * deltaTime);
         }
         move -= moveSpeed * deltaTime;
         square_2.setPosition(700.0f + move, windowHeight - squareSize);
