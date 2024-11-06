@@ -1,39 +1,47 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
-void    drawBackground(sf::RenderWindow& window, sf::RectangleShape bg, float move)
+void    drawBackground(sf::RenderWindow& window, sf::RectangleShape bg, sf::RectangleShape square_2, float move)
 {
-    for (int i = 0; i < 1000; i += 1)
+    for (int i = 0; i < window.getSize().x; i += 1)
     {
-        for (int j = 0; j < 500; j += 1)
+        for (int j = 0; j < window.getSize().y; j += 1)
         {
             if (i % 2 && j % 2)
             {
-                bg.setPosition((i * 10) + move, j * 10);
+                bg.setPosition((i * 20) + move, j * 20);
                 window.draw(bg);
             }
         }
     }
+    window.draw(square_2);
 }
 
 int main()
 {
-    auto window = sf::RenderWindow(sf::VideoMode(1000.0f, 500.0f), "CMake SFML Project");
-    window.setFramerateLimit(60);
+    auto window = sf::RenderWindow(sf::VideoMode(2000.0f, 1000.0f), "CMake SFML Project");
+    //window.setFramerateLimit(60);
 
-    sf::RectangleShape  square(sf::Vector2f(50.0f, 50.0f));
-    sf::RectangleShape  square_2(sf::Vector2f(50.0f, 50.0f));
-    sf::RectangleShape  bg(sf::Vector2f(10.0f, 10.0f));
+    sf::Vector2u    windowSize = window.getSize();
+    unsigned int    windowWidth = windowSize.x;
+    unsigned int    windowHeight = windowSize.y;
+    float           squareSize = windowWidth / 20;
+    float           bgSqSize = windowWidth / 100;
+
+    sf::RectangleShape  square(sf::Vector2f(squareSize, squareSize));
+    sf::RectangleShape  square_2(sf::Vector2f(squareSize, squareSize));
+    sf::RectangleShape  bg(sf::Vector2f(bgSqSize, bgSqSize));
     square.setFillColor(sf::Color::Red);
     square_2.setFillColor(sf::Color::Green);
     bg.setFillColor(sf::Color(100, 100, 100, 100));
 
-    square.setPosition(100.0f, 450.0f);
-    square_2.setPosition(350.0f, 450.0f);
+    square.setPosition(200.0f, windowHeight - squareSize);
+    square_2.setPosition(700.0f, windowHeight - squareSize);
 
-    float x = 100.0f;
-    float y = 450.0f; 
+    float moveSpeed = 50.0f;
     static float move;
+
+    sf::Clock   clock;
 
     while (window.isOpen())
     {
@@ -41,35 +49,36 @@ int main()
         while (window.pollEvent(event))
         {
 
-            sf::Vector2f position = square.getPosition();
-
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-            {
-                if (position.y >= 0.0f)
-                {
-                    square.move(0.0f, -0.1f);
-                }
-            }
-            else
-            {
-                if (position.y <= 450.0f)
-                {
-                    square.move(0.0f, +0.1f);
-                }
-            }
-
-            move -= 0.1f;
-            square_2.setPosition(350.0f + move, 450.0f);
-
             if (event.type == sf::Event::Closed)
                 window.close();
         }
 
+        // time elapsed each frame
+        float deltaTime = clock.restart().asSeconds();
+
+        sf::Vector2f position = square.getPosition();
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+        {
+            if (position.y >= 0.0f)
+            {
+                square.move(0.0f, -moveSpeed * deltaTime);
+            }
+        }
+        else
+        {
+            if (position.y <= (windowHeight - squareSize))
+            {
+                square.move(0.0f, moveSpeed * deltaTime);
+            }
+        }
+        move -= moveSpeed * deltaTime;
+        square_2.setPosition(700.0f + move, windowHeight - squareSize);
+
         window.clear();
 
-        drawBackground(window, bg, move);
+        drawBackground(window, bg, square_2, move);
         window.draw(square);
-        window.draw(square_2);
     
         window.display();
     }
