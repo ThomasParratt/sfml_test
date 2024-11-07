@@ -138,14 +138,10 @@ int main()
             move -= moveSpeed * deltaTime;
         }
 
-
-        // Move the obstacle to the left by moveSpeed each frame
-        square_2.move(-moveSpeed * deltaTime, 0.0f);
-
-        // Check if the obstacle has gone off the left edge of the screen
+        square_2.setPosition(700.0f + move, windowHeight - squareSize); // this works but then another obstaacle doesn't come
+        //square_2.move(-moveSpeed * deltaTime, 0.0f); // this works but then collision doesn't work
         if (obstacle.getRight() < 0)
         {
-            // Reset the obstacle to start from the right side of the screen
             square_2.setPosition(windowWidth, windowHeight - squareSize);
         }
 
