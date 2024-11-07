@@ -1,19 +1,24 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <cmath>
 
 // smoother movement
+// optimize the drawing of the background
 // collisions
 // more obstacles
 
 void    drawBackground(sf::RenderWindow& window, sf::RectangleShape bg, sf::RectangleShape square_2, sf::RectangleShape square, float move)
 {
-    for (int i = 0; i < window.getSize().x; i += 1)
+    float offsetX = fmod(move, 40);
+    //std::cout << "offsetX = " << offsetX << std::endl;
+
+    for (int i = 0; i < window.getSize().x / 20 + 1; i++)
     {
-        for (int j = 0; j < window.getSize().y; j += 1)
+        for (int j = 0; j < window.getSize().y / 20 + 1; j++)
         {
-            if (i % 2 && j % 2)
+            if ((i + j) % 2 == 0)
             {
-                bg.setPosition((i * 20) + move, j * 20);
+                bg.setPosition((i * 20) + offsetX + 20, j * 20);
                 window.draw(bg);
             }
         }
@@ -42,7 +47,7 @@ int main()
     square.setPosition(200.0f, windowHeight - squareSize);
     square_2.setPosition(700.0f, windowHeight - squareSize);
 
-    float moveSpeed = 50.0f;
+    float moveSpeed = 10.0f;
     static float move;
 
     sf::Clock   clock;
