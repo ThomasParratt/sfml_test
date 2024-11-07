@@ -2,10 +2,41 @@
 #include <iostream>
 #include <cmath>
 
-// smoother movement
-// optimize the drawing of the background
-// collisions
-// more obstacles
+class Square
+{
+    private:
+        float   top;
+        float   bottom;
+        float   left;
+        float   right;
+    public:
+        //Square()
+        //Square(const Square& obj);
+        Square(sf::Vector2f position, float squareSize);
+        //~Square();
+        //Square&  operator=(const Square& obj);
+        // std::string     getName() const;
+        // int             getGrade() const;
+        float   getTop() const {return this->top;}
+        float   getBottom() const {return this->bottom;}
+        float   getLeft() const {return this->left;}
+        float   getRight() const {return this->right;}
+};
+
+Square::Square(sf::Vector2f position, float squareSize)
+{
+    this->top = position.y;
+    this->bottom = position.y + squareSize;
+    this->left = position.x;
+    this->right = position.x + squareSize;
+}
+
+// collisions    // DETERMINE DIFFERENT POSITION VALUES // in new function
+// more obstacles (with map?)
+// jump on one press
+// refactor
+// classes?
+// resource manager
 
 void    drawBackground(sf::RenderWindow& window, sf::RectangleShape bg, sf::RectangleShape square_2, sf::RectangleShape square, float move)
 {
@@ -47,7 +78,7 @@ int main()
     square.setPosition(200.0f, windowHeight - squareSize);
     square_2.setPosition(700.0f, windowHeight - squareSize);
 
-    float moveSpeed = 10.0f;
+    float moveSpeed = 200.0f;
     static float move;
 
     sf::Clock   clock;
@@ -77,18 +108,40 @@ int main()
 
         //float   floorLevel = 
 
+        Square  player(playerPos, squareSize);
+        Square  obstacle(obstaclePos, squareSize);
+
+        //std::cout << "player top = " << player.getTop() << std::endl;
+        //std::cout << "player bottom = " << player.getBottom() << std::endl;
+        //std::cout << "player left = " << player.getLeft() << std::endl;
+        //std::cout << "player right = " << player.getRight() << std::endl << std::endl;
+        //std::cout << "windowHeight = " << windowHeight << std::endl;
+
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && playerPos.y >= 0.0f)
             square.move(0.0f, -moveSpeed * deltaTime);
-        else if (playerPos.y < (windowHeight - squareSize) && ((obstaclePos.x >= playerPos.x + squareSize) || (obstaclePos.x <= playerPos.x)))
+        else if ((player.getRight() < obstacle.getLeft()) || (player.getLeft() > obstacle.getRight()))
+        {
+            if (player.getBottom() < windowHeight) 
+            {
+                    square.move(0.0f, moveSpeed * deltaTime);
+            }
+        }
+        else if (player.getBottom() < obstacle.getTop())
         {
             square.move(0.0f, moveSpeed * deltaTime);
         }
-        else if (playerPos.y < (windowHeight - squareSize * 2)) // above the obstacle
-        {
-            square.move(0.0f, moveSpeed * deltaTime);
-        }
+
         
-        if ((obstaclePos.x >= playerPos.x + squareSize) || (playerPos.y != (windowHeight - squareSize)))
+        if ((obstacle.getLeft() > player.getRight()))
+        {
+            move -= moveSpeed * deltaTime;
+        }
+        if ((player.getRight() >= obstacle.getLeft()) && (player.getLeft() <= obstacle.getRight()))
+        {
+            if (player.getBottom() <= obstacle.getTop())
+                move -= moveSpeed * deltaTime;
+        }
+        else
             move -= moveSpeed * deltaTime;
         square_2.setPosition(700.0f + move, windowHeight - squareSize);
 
