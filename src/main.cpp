@@ -139,11 +139,16 @@ int main()
         }
 
 
-        square_2.setPosition(700.0f + move, windowHeight - squareSize);
+        // Move the obstacle to the left by moveSpeed each frame
+        square_2.move(-moveSpeed * deltaTime, 0.0f);
+
+        // Check if the obstacle has gone off the left edge of the screen
         if (obstacle.getRight() < 0)
         {
+            // Reset the obstacle to start from the right side of the screen
             square_2.setPosition(windowWidth, windowHeight - squareSize);
         }
+
         //square_3.setPosition(1500.0f + move, windowHeight - squareSize);
 
         window.clear();
