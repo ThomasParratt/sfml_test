@@ -31,7 +31,6 @@ Square::Square(sf::Vector2f position, float squareSize)
     this->right = position.x + squareSize;
 }
 
-// collisions    // DETERMINE DIFFERENT POSITION VALUES // in new function
 // more obstacles (with map?)
 // jump on one press
 // refactor
@@ -55,6 +54,7 @@ void    drawBackground(sf::RenderWindow& window, sf::RectangleShape bg, sf::Rect
         }
     }
     window.draw(square_2);
+    //window.draw(square_3);
 }
 
 int main()
@@ -70,13 +70,16 @@ int main()
 
     sf::RectangleShape  square(sf::Vector2f(squareSize, squareSize));
     sf::RectangleShape  square_2(sf::Vector2f(squareSize, squareSize));
+    //sf::RectangleShape  square_3(sf::Vector2f(squareSize, squareSize));
     sf::RectangleShape  bg(sf::Vector2f(bgSqSize, bgSqSize));
-    square.setFillColor(sf::Color::Blue);
+    square.setFillColor(sf::Color::Red);
     square_2.setFillColor(sf::Color::Green);
+    //square_3.setFillColor(sf::Color::Blue);
     bg.setFillColor(sf::Color(100, 100, 100, 100));
 
     square.setPosition(200.0f, windowHeight - squareSize);
     square_2.setPosition(700.0f, windowHeight - squareSize);
+    //square_3.setPosition(1500.0f, windowHeight - squareSize);
 
     float moveSpeed = 200.0f;
     static float move;
@@ -92,38 +95,21 @@ int main()
                 window.close();
         }
 
-        // time elapsed each frame
         float deltaTime = clock.restart().asSeconds();
 
         sf::Vector2f    playerPos = square.getPosition();
         sf::Vector2f    obstaclePos = square_2.getPosition();
-        // std::cout << "obstaclePos.y - squareSize = " << obstaclePos.y - squareSize << std::endl;
-        // std::cout << "obstaclePos.x = " << obstaclePos.x << std::endl;
-        // std::cout << "windowHeight - squareSize = " << windowHeight - squareSize << std::endl;
-
-        // std::cout << "playerPosPos.x = " << playerPos.x << std::endl;
-        // std::cout << "playerPosPos.y = " << playerPos.y << std::endl << std::endl;
-        // std::cout << "obstaclePos.x = " << obstaclePos.x << std::endl;
-        //std::cout << "obstaclePos.y = " << obstaclePos.y << std::endl << std::endl;
-
-        //float   floorLevel = 
 
         Square  player(playerPos, squareSize);
         Square  obstacle(obstaclePos, squareSize);
 
-        //std::cout << "player top = " << player.getTop() << std::endl;
-        //std::cout << "player bottom = " << player.getBottom() << std::endl;
-        //std::cout << "player left = " << player.getLeft() << std::endl;
-        //std::cout << "player right = " << player.getRight() << std::endl << std::endl;
-        //std::cout << "windowHeight = " << windowHeight << std::endl;
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && playerPos.y >= 0.0f)
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && player.getTop() >= 0.0f)
             square.move(0.0f, -moveSpeed * deltaTime);
         else if ((player.getRight() < obstacle.getLeft()) || (player.getLeft() > obstacle.getRight()))
         {
             if (player.getBottom() < windowHeight) 
             {
-                    square.move(0.0f, moveSpeed * deltaTime);
+                square.move(0.0f, moveSpeed * deltaTime);
             }
         }
         else if (player.getBottom() < obstacle.getTop())
@@ -136,14 +122,29 @@ int main()
         {
             move -= moveSpeed * deltaTime;
         }
-        if ((player.getRight() >= obstacle.getLeft()) && (player.getLeft() <= obstacle.getRight()))
+        else if ((player.getRight() >= obstacle.getLeft()) && (player.getLeft() <= obstacle.getRight()))
         {
-            if (player.getBottom() <= obstacle.getTop())
+            if (player.getBottom() <= obstacle.getTop() + 1)
+            {
                 move -= moveSpeed * deltaTime;
+            }
+            else if (player.getBottom() <= obstacle.getTop())
+            {
+                move -= moveSpeed * deltaTime;
+            }
         }
         else
+        {
             move -= moveSpeed * deltaTime;
+        }
+
+
         square_2.setPosition(700.0f + move, windowHeight - squareSize);
+        if (obstacle.getRight() < 0)
+        {
+            square_2.setPosition(windowWidth, windowHeight - squareSize);
+        }
+        //square_3.setPosition(1500.0f + move, windowHeight - squareSize);
 
         window.clear();
 
