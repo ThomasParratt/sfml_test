@@ -2,7 +2,7 @@
 #include <iostream>
 #include <cmath>
 
-class Square
+class Square // Maybe this should be called ShapeLimits ?
 {
     private:
         float   top;
@@ -36,7 +36,7 @@ Square::Square(sf::Vector2f position, float squareSize)
 // jump on one press
 // refactor
 // classes?
-// resource manager
+// resource manager //assets
 
 void    drawBackground(sf::RenderWindow& window, sf::RectangleShape bg, sf::RectangleShape square_2, sf::RectangleShape square, float move)
 {
@@ -70,7 +70,7 @@ int main()
     float           bgSqSize = windowWidth / 100;
 
     sf::RectangleShape  square(sf::Vector2f(squareSize, squareSize));
-    sf::RectangleShape  square_2(sf::Vector2f(squareSize, squareSize));
+    sf::RectangleShape  square_2(sf::Vector2f(squareSize * 2, squareSize * 2));
     //sf::RectangleShape  square_3(sf::Vector2f(squareSize, squareSize));
     sf::RectangleShape  bg(sf::Vector2f(bgSqSize, bgSqSize));
     square.setFillColor(sf::Color::Red);
@@ -79,7 +79,7 @@ int main()
     bg.setFillColor(sf::Color(100, 100, 100, 100));
 
     square.setPosition(200.0f, windowHeight - squareSize);
-    square_2.setPosition(700.0f, windowHeight - squareSize);
+    square_2.setPosition(700.0f, windowHeight - squareSize * 2);
     //square_3.setPosition(1500.0f, windowHeight - squareSize);
 
     float moveSpeed = 200.0f;
@@ -102,49 +102,36 @@ int main()
         sf::Vector2f    obstaclePos = square_2.getPosition();
 
         Square  player(playerPos, squareSize);
-        Square  obstacle(obstaclePos, squareSize);
+        Square  obstacle(obstaclePos, squareSize * 2);
 
+        // UP AND DOWN
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && player.getTop() >= 0.0f)
             square.move(0.0f, -moveSpeed * deltaTime);
-        else if ((player.getRight() < obstacle.getLeft()) || (player.getLeft() > obstacle.getRight()))
+        else if ((player.getRight() <= obstacle.getLeft() + 1) || (player.getLeft() >= obstacle.getRight()))
         {
-            if (player.getBottom() < windowHeight) 
-            {
+            if (player.getBottom() < windowHeight)
                 square.move(0.0f, moveSpeed * deltaTime);
-            }
         }
         else if (player.getBottom() < obstacle.getTop())
-        {
             square.move(0.0f, moveSpeed * deltaTime);
-        }
 
-        
+        // LEFT TO RIGHT
         if ((obstacle.getLeft() > player.getRight()))
-        {
             move -= moveSpeed * deltaTime;
-        }
         else if ((player.getRight() >= obstacle.getLeft()) && (player.getLeft() <= obstacle.getRight()))
         {
             if (player.getBottom() <= obstacle.getTop() + 1)
-            {
                 move -= moveSpeed * deltaTime;
-            }
             else if (player.getBottom() <= obstacle.getTop())
-            {
                 move -= moveSpeed * deltaTime;
-            }
         }
         else
-        {
             move -= moveSpeed * deltaTime;
-        }
 
-        square_2.setPosition(700.0f + move, windowHeight - squareSize); // this works but then another obstaacle doesn't come
+        square_2.setPosition(700.0f + move, windowHeight - squareSize * 2); // this works but then another obstaacle doesn't come
         //square_2.move(-moveSpeed * deltaTime, 0.0f); // this works but then collision doesn't work
         if (obstacle.getRight() < 0)
-        {
-            square_2.setPosition(windowWidth, windowHeight - squareSize);
-        }
+            square_2.setPosition(windowWidth, windowHeight - squareSize * 2);
 
         //square_3.setPosition(1500.0f + move, windowHeight - squareSize);
 
