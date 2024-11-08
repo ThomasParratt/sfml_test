@@ -158,6 +158,8 @@ int main()
         sf::Event event;
         while (window.pollEvent(event))
         {
+            if (event.key.scancode == sf::Keyboard::Scan::Escape)
+                window.close();
             if (event.type == sf::Event::Closed)
                 window.close();
         }
