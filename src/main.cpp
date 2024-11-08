@@ -58,6 +58,36 @@ void    drawBackground(sf::RenderWindow& window, sf::RectangleShape bg, sf::Rect
     //window.draw(square_3);
 }
 
+float    horiz_move(Square player, Square obstacle, float moveSpeed, float move, float deltaTime)
+{
+    // LEFT TO RIGHT
+    if ((obstacle.getLeft() > player.getRight()))
+        move -= moveSpeed * deltaTime;
+    else if ((player.getRight() >= obstacle.getLeft()) && (player.getLeft() <= obstacle.getRight()))
+    {
+        if (player.getBottom() <= obstacle.getTop() + 1)
+            move -= moveSpeed * deltaTime;
+        else if (player.getBottom() <= obstacle.getTop())
+            move -= moveSpeed * deltaTime;
+    }
+    else
+        move -= moveSpeed * deltaTime;
+    return (move);
+}
+
+void    vert_move(Square player, Square obstacle, float moveSpeed, float move, float deltaTime, float windowHeight, sf::RectangleShape& square)
+{
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && player.getTop() >= 0.0f)
+        square.move(0.0f, -moveSpeed * deltaTime);
+    else if ((player.getRight() <= obstacle.getLeft() + 1) || (player.getLeft() >= obstacle.getRight()))
+    {
+        if (player.getBottom() < windowHeight)
+            square.move(0.0f, moveSpeed * deltaTime);
+    }
+    else if (player.getBottom() < obstacle.getTop())
+        square.move(0.0f, moveSpeed * deltaTime);
+}
+
 int main()
 {
     auto window = sf::RenderWindow(sf::VideoMode(2000.0f, 1000.0f), "CMake SFML Project");
@@ -105,28 +135,8 @@ int main()
         Square  obstacle(obstaclePos, squareSize * 2);
 
         // UP AND DOWN
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && player.getTop() >= 0.0f)
-            square.move(0.0f, -moveSpeed * deltaTime);
-        else if ((player.getRight() <= obstacle.getLeft() + 1) || (player.getLeft() >= obstacle.getRight()))
-        {
-            if (player.getBottom() < windowHeight)
-                square.move(0.0f, moveSpeed * deltaTime);
-        }
-        else if (player.getBottom() < obstacle.getTop())
-            square.move(0.0f, moveSpeed * deltaTime);
-
-        // LEFT TO RIGHT
-        if ((obstacle.getLeft() > player.getRight()))
-            move -= moveSpeed * deltaTime;
-        else if ((player.getRight() >= obstacle.getLeft()) && (player.getLeft() <= obstacle.getRight()))
-        {
-            if (player.getBottom() <= obstacle.getTop() + 1)
-                move -= moveSpeed * deltaTime;
-            else if (player.getBottom() <= obstacle.getTop())
-                move -= moveSpeed * deltaTime;
-        }
-        else
-            move -= moveSpeed * deltaTime;
+        vert_move(player, obstacle, moveSpeed, move, deltaTime, windowHeight, square);  
+        move = horiz_move(player, obstacle, moveSpeed, move, deltaTime);
 
         square_2.setPosition(700.0f + move, windowHeight - squareSize * 2); // this works but then another obstaacle doesn't come
         //square_2.move(-moveSpeed * deltaTime, 0.0f); // this works but then collision doesn't work
