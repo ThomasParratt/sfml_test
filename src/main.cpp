@@ -91,28 +91,28 @@ void    vert_move(Square player, Square obstacle, float moveSpeed, float move, f
         square.move(0.0f, moveSpeed * deltaTime);
 }
 
-sf::Text set_text(sf::Font& font, sf::RenderWindow& window)
-{
-    sf::Text    text;
-    text.setFont(font);
-    text.setString("HELLO WORLD");
-    text.setCharacterSize(100);
-    text.setFillColor(sf::Color::Red);
-    //text.setStyle(sf::Text::Bold | sf::Text::Underlined);
-    return (text);
-}
+// sf::Text set_text(sf::Font& font, sf::RenderWindow& window)
+// {
+//     sf::Text    text;
+//     text.setFont(font);
+//     text.setString("HELLO WORLD");
+//     text.setCharacterSize(50);
+//     text.setFillColor(sf::Color::Red);
+//     //text.setStyle(sf::Text::Bold | sf::Text::Underlined);
+//     return (text);
+// }
 
-sf::Font load_font(sf::RenderWindow& window)
-{
-    sf::Font    font;
-    if (!font.loadFromFile("/usr/share/fonts/truetype/crosextra/Caladea-Regular.ttf"))
-    {
-        std::cout << "Font loading error" << std::endl;
-    }
-    std::cout << "Font loaded" << std::endl;
-    set_text(font, window);
-    return (font);
-}
+// sf::Font load_font(sf::RenderWindow& window)
+// {
+//     sf::Font    font;
+//     if (!font.loadFromFile("/usr/share/fonts/truetype/crosextra/Caladea-Regular.ttf"))
+//     {
+//         std::cout << "Font loading error" << std::endl;
+//     }
+//     std::cout << "Font loaded" << std::endl;
+//     set_text(font, window);
+//     return (font);
+// }
 
 int main()
 {
@@ -130,7 +130,7 @@ int main()
     //sf::RectangleShape  square_3(sf::Vector2f(squareSize, squareSize));
     sf::RectangleShape  bg(sf::Vector2f(bgSqSize, bgSqSize));
     square.setFillColor(sf::Color::Red);
-    square_2.setFillColor(sf::Color::Green);
+    //square_2.setFillColor(sf::Color::Green);
     //square_3.setFillColor(sf::Color::Blue);
     bg.setFillColor(sf::Color(100, 100, 100, 100));
 
@@ -141,9 +141,17 @@ int main()
     float moveSpeed = 200.0f;
     static float move;
 
-    sf::Font    font = load_font(window);
+    //sf::Font    font = load_font(window);
 
     sf::Clock   clock;
+
+    sf::Texture texture;
+    if (!texture.loadFromFile("../../assets/CRATE_1A.PNG"))
+    {
+        std::cout << "Texture loading error" << std::endl;
+    }
+    sf::Sprite  sprite;
+    square_2.setTexture(&texture);
 
     while (window.isOpen())
     {
@@ -177,8 +185,9 @@ int main()
 
         drawBackground(window, bg, square_2, square, move);
         window.draw(square);
-        sf::Text text = set_text(font, window);
-        window.draw(text);
+        // sf::Text text = set_text(font, window);
+        // text.move(windowWidth - 500.0f, 0.0f);
+        // window.draw(text);
     
         window.display();
     }
