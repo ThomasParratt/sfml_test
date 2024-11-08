@@ -77,7 +77,11 @@ float    horiz_move(Square player, Square obstacle, float moveSpeed, float move,
 void    vert_move(Square player, Square obstacle, float moveSpeed, float move, float deltaTime, float windowHeight, sf::RectangleShape& square)
 {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && player.getTop() >= 0.0f)
+    {
         square.move(0.0f, -moveSpeed * deltaTime);
+        // square.setOrigin(20.0f, 20.0f); ROTATION TO LOOK AT LATER
+        // square.rotate(10.0f);
+    }
     else if ((player.getRight() <= obstacle.getLeft() + 1) || (player.getLeft() >= obstacle.getRight()))
     {
         if (player.getBottom() < windowHeight)
@@ -85,6 +89,29 @@ void    vert_move(Square player, Square obstacle, float moveSpeed, float move, f
     }
     else if (player.getBottom() < obstacle.getTop())
         square.move(0.0f, moveSpeed * deltaTime);
+}
+
+sf::Text set_text(sf::Font& font, sf::RenderWindow& window)
+{
+    sf::Text    text;
+    text.setFont(font);
+    text.setString("HELLO WORLD");
+    text.setCharacterSize(100);
+    text.setFillColor(sf::Color::Red);
+    //text.setStyle(sf::Text::Bold | sf::Text::Underlined);
+    return (text);
+}
+
+sf::Font load_font(sf::RenderWindow& window)
+{
+    sf::Font    font;
+    if (!font.loadFromFile("/usr/share/fonts/truetype/crosextra/Caladea-Regular.ttf"))
+    {
+        std::cout << "Font loading error" << std::endl;
+    }
+    std::cout << "Font loaded" << std::endl;
+    set_text(font, window);
+    return (font);
 }
 
 int main()
@@ -113,6 +140,8 @@ int main()
 
     float moveSpeed = 200.0f;
     static float move;
+
+    sf::Font    font = load_font(window);
 
     sf::Clock   clock;
 
@@ -148,6 +177,8 @@ int main()
 
         drawBackground(window, bg, square_2, square, move);
         window.draw(square);
+        sf::Text text = set_text(font, window);
+        window.draw(text);
     
         window.display();
     }
