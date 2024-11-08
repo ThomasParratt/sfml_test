@@ -60,7 +60,6 @@ void    drawBackground(sf::RenderWindow& window, sf::RectangleShape bg, sf::Rect
 
 float    horiz_move(Square player, Square obstacle, float moveSpeed, float move, float deltaTime)
 {
-    // LEFT TO RIGHT
     if ((obstacle.getLeft() > player.getRight()))
         move -= moveSpeed * deltaTime;
     else if ((player.getRight() >= obstacle.getLeft()) && (player.getLeft() <= obstacle.getRight()))
@@ -108,8 +107,8 @@ int main()
     //square_3.setFillColor(sf::Color::Blue);
     bg.setFillColor(sf::Color(100, 100, 100, 100));
 
-    square.setPosition(200.0f, windowHeight - squareSize);
-    square_2.setPosition(700.0f, windowHeight - squareSize * 2);
+    square.setPosition(windowWidth / 4, windowHeight - squareSize);
+    square_2.setPosition(windowWidth / 2, windowHeight - squareSize * 2);
     //square_3.setPosition(1500.0f, windowHeight - squareSize);
 
     float moveSpeed = 200.0f;
@@ -138,7 +137,7 @@ int main()
         vert_move(player, obstacle, moveSpeed, move, deltaTime, windowHeight, square);  
         move = horiz_move(player, obstacle, moveSpeed, move, deltaTime);
 
-        square_2.setPosition(700.0f + move, windowHeight - squareSize * 2); // this works but then another obstaacle doesn't come
+        square_2.setPosition(windowWidth / 2 + move, windowHeight - squareSize * 2); // this works but then another obstaacle doesn't come
         //square_2.move(-moveSpeed * deltaTime, 0.0f); // this works but then collision doesn't work
         if (obstacle.getRight() < 0)
             square_2.setPosition(windowWidth, windowHeight - squareSize * 2);
